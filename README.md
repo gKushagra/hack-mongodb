@@ -8,11 +8,13 @@ and
 
 ### Project Structure
 
+```
 root/
-    | app-client/ : Frontend application built using Angular 
-    | app-server/ : Backend API built using Express.js and Node.js
-    | .gitignore
-    | LICENSE
-    | README.md
+ app-client/ : Frontend application built using Angular 
+ app-server/ : Backend API built using Express.js and Node.js
+ .gitignore
+ LICENSE
+ README.md
+```
 
 ### Build and Run Locally
