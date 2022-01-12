@@ -1,0 +1,70 @@
+<app-toolbar></app-toolbar>
+
+<div class="filter-options">
+    <form [formGroup]="collegeScorecardSearchForm" (ngSubmit)="collegeScorecardSearch()" fxLayout="row"
+        fxLayoutAlign="start center" style="width: 100%;">
+        <input formControlName="name" class="form-control" type="text"
+            placeholder="(Optional) Search keyword e.g. Dallas, Carnegie, Stanford, etc.">
+        <div fxFlex="2"></div>
+        <input formControlName="zip" fxFlex="15" class="form-control" type="text" pattern="\d*" maxlength="5"
+            placeholder="Zip Code*">
+        <div fxFlex="2"></div>
+        <button
+            [disabled]="collegeScorecardSearchForm.controls.zip.value===''||collegeScorecardSearchForm.controls.zip.value===null"
+            type="submit" class="btn btn-outline-primary">Search</button>
+    </form>
+</div>
+
+<div class="filter-options">
+    <div fxLayout="row" fxLayoutAlign="start center" style="width: 100%">
+        <div fxFlex></div>
+        <div><b><u>{{ "Showing " + resultsCount + " Colleges" }}</u></b></div>
+    </div>
+</div>
+
+<div class="cards-list-wrapper">
+    <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxFlex="15" fxLayout="column" fxLayoutAlign="start start">
+            <mat-card style="width: 100%;">
+                <div fxLayout="column" fxLayoutAlign="start start" style="width: 100%;">
+                    <div class="mat-subheading-1"><u>Filters</u></div>
+                    <!-- city -->
+                    <input class="form-control form-control-sm" type="text" placeholder="City">
+                    <!-- state -->
+                    <select fxFlex="15" class="form-select form-select-sm" aria-label="State" style="margin-top: 12px;">
+                        <option value="State">State</option>
+                        <option *ngFor="let state of statesList" [value]="state.SHORT">
+                            {{ state.SHORT + " - " + state.STATE }}
+                        </option>
+                    </select>
+                    <!-- avl. programs -->
+                    <input class="form-control form-control-sm" type="text" placeholder="Major"
+                        style="margin-top: 12px;">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                        style="margin-top: 12px;">Apply</button>
+                </div>
+            </mat-card>
+        </div>
+        <div fxFlex="1"></div>
+        <div fxFlex="84" fxLayout="column" fxLayoutAlign="start start" class="cards-list-col">
+            <div *ngFor="let result of results; let i = index;" class="cards-list">
+                <mat-card>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <div fxFlex="2"></div>
+                        <div class="mat-subheading-2">{{ result.school.name }}</div>
+                        <div fxFlex></div>
+                        <button type="button" mat-button *ngIf="currentlyExpandedResult!==result.school.name"
+                            (click)="expandResult(i)">Show more</button>
+                        <button type="button" mat-button *ngIf="currentlyExpandedResult===result.school.name"
+                            (click)="collapseResult(i)">Show less</button>
+                        <div fxFlex="2"></div>
+                    </div>
+                    <div *ngIf="currentlyExpandedResult===result.school.name" fxLayout="columns"
+                        fxLayoutAlign="start start">
+                        <span>Expanded!</span>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>
