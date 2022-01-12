@@ -1,0 +1,17 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar {
+  background: #546e7a !important;
+  color: #ffffff !important;
+}
+
+.mat-toolbar-row,
+.mat-toolbar-single-row {
+  height: 7vh !important;
+}
+
+.mat-button {
+  color: #ffffff !important;
+}
