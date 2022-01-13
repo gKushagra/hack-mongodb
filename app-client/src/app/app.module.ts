@@ -13,13 +13,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FilterService } from './filter.service';
+import { AuthComponent } from './auth/auth/auth.component';
+import { ResetComponent } from './auth/reset/reset.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SearchResultsComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    AuthComponent,
+    ResetComponent
   ],
   imports: [
     BrowserModule,
@@ -29,10 +34,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     MaterialModule,
     FlexLayoutModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
-    ApiService
+    ApiService,
+    FilterService,
   ],
   bootstrap: [AppComponent]
 })
