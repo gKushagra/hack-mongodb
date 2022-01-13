@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { College, CSC_School, State } from "../models";
 
@@ -19,15 +19,13 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute,
     private router: Router,
   ) {
     this.collegeList = [];
     this.statesList = [];
     this.resultsCount = 0;
     this.collegeScorecardSearchForm = new FormGroup({
-      zip: new FormControl(null, [Validators.maxLength(5), Validators.required]),
-      name: new FormControl(null)
+      keyword: new FormControl(null, [Validators.required])
     });
   }
 

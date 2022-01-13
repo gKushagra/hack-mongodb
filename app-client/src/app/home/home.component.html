@@ -5,15 +5,15 @@
         <form [formGroup]="collegeScorecardSearchForm" (ngSubmit)="collegeScorecardSearch()" fxLayout="column"
             fxLayoutAlign="start center" style="width: 100%;">
             <div class="mat-title" style="margin-top: 12px;">College Search</div>
-            <div *ngIf="collegeScorecardSearchForm.controls.zip.value===''" style="color: #BF360C;">
-                {{ "Zip code is required" }}
+            <div *ngIf="collegeScorecardSearchForm.invalid" style="color: #BF360C;">
+                {{ "Please enter a keyword to search" }}
             </div>
-            <input formControlName="zip" class="form-control" type="text" pattern="\d*" maxlength="5"
-                placeholder="Zip Code*" style="margin-top: 12px;">
-            <input formControlName="name" class="form-control" type="text"
-                placeholder="(Optional) Search keyword e.g. Dallas, Carnegie, Stanford, etc." style="margin-top: 12px;">
+            <!-- <input formControlName="zip" class="form-control" type="text" pattern="\d*" maxlength="5"
+                placeholder="Zip Code*" style="margin-top: 12px;"> -->
+            <input formControlName="keyword" class="form-control" type="text"
+                placeholder="Search by keyword e.g. Dallas, Texas, Florida, Carnegie, etc." style="margin-top: 12px;">
             <button type="submit" class="btn btn-outline-primary" style="margin-top: 12px;"
-                [disabled]="collegeScorecardSearchForm.controls.zip.value===null||collegeScorecardSearchForm.controls.zip.value===''">Search</button>
+                [disabled]="collegeScorecardSearchForm.invalid">Search</button>
             <div class="mat-small" style="margin-top: 16px;">
                 Data provided by
                 <a href="https://github.com/RTICWDT/open-data-maker/blob/master/API.md"

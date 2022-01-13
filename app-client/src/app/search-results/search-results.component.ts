@@ -1,8 +1,8 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
+import { FilterService } from '../filter.service';
 import { CSC_School, State } from '../models';
 
 @Component({
@@ -18,26 +18,31 @@ export class SearchResultsComponent implements OnInit {
   private urlParams: any;
   public collegeScorecardSearchForm: FormGroup;
   public currentlyExpandedResult: string;
+  public filterResultsForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
+    public filterService: FilterService,
     private route: ActivatedRoute,
   ) {
     this.results = [];
     this.statesList = [];
     this.resultsCount = 0;
-    this.urlParams = { zip: null, name: null };
+    this.urlParams = { keyword: null };
     this.collegeScorecardSearchForm = new FormGroup({
-      zip: new FormControl(null, [Validators.maxLength(5), Validators.required]),
-      name: new FormControl(null)
+      keyword: new FormControl(null, [Validators.required])
     });
     this.currentlyExpandedResult = null;
+    this.filterResultsForm = new FormGroup({
+      city: new FormControl(null),
+      state: new FormControl('State'),
+      major: new FormControl(null)
+    });
   }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.urlParams.zip = params['zip'];
-      this.urlParams.name = params['name'];
+      this.urlParams.keyword = params['keyword'];
       console.log(this.urlParams);
       this.collegeScorecardSearchForm.patchValue(this.urlParams);
       this.apiService.getCollegeScorecardSearch(this.urlParams)
@@ -45,6 +50,7 @@ export class SearchResultsComponent implements OnInit {
           console.log(data);
           (data !== null && data.length > 0) ? this.results = data : null;
           this.resultsCount = data.length;
+          this.filterService.setCurrentResults(data);
         });
     });
 
@@ -52,22 +58,39 @@ export class SearchResultsComponent implements OnInit {
       .then(data => this.statesList = data);
   }
 
-  collegeScorecardSearch(): void {
+  public collegeScorecardSearch(): void {
     console.log(this.collegeScorecardSearchForm.value);
     this.apiService.getCollegeScorecardSearch(this.collegeScorecardSearchForm.value)
       .then((data: CSC_School[]) => {
         console.log(data);
         (data !== null && data.length > 0) ? this.results = data : null;
         this.resultsCount = data.length;
+        this.filterService.setCurrentResults(data);
       });
   }
 
-  expandResult(i: number): void {
+  public expandResult(i: number): void {
     this.currentlyExpandedResult = this.results[i].school.name;
   }
 
-  collapseResult(i: number): void {
+  public collapseResult(i: number): void {
     this.currentlyExpandedResult = null;
   }
 
+  public filterResults(): void {
+    console.log(this.filterResultsForm.value);
+    this.filterService.filterFromResults(this.filterResultsForm.value)
+      .then(r => {
+        console.log(r);
+        this.results = r;
+        this.resultsCount = r.length;
+      });
+  }
+
+  public resetResults(): void {
+    this.results = this.filterService.getCurretResults();
+    this.resultsCount = this.results.length;
+    this.filterService.isFilterApplied = false;
+    this.filterResultsForm.patchValue({ city: null, state: 'State', major: null });
+  }
 }
