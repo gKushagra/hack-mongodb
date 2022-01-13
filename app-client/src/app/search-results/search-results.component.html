@@ -3,15 +3,14 @@
 <div class="filter-options">
     <form [formGroup]="collegeScorecardSearchForm" (ngSubmit)="collegeScorecardSearch()" fxLayout="row"
         fxLayoutAlign="start center" style="width: 100%;">
-        <input formControlName="name" class="form-control" type="text"
-            placeholder="(Optional) Search keyword e.g. Dallas, Carnegie, Stanford, etc.">
+        <input formControlName="keyword" class="form-control" type="text"
+            placeholder="Search by keyword e.g. Dallas, Texas, Florida, Carnegie, etc.">
         <div fxFlex="2"></div>
-        <input formControlName="zip" fxFlex="15" class="form-control" type="text" pattern="\d*" maxlength="5"
+        <!-- <input formControlName="zip" fxFlex="15" class="form-control" type="text" pattern="\d*" maxlength="5"
             placeholder="Zip Code*">
-        <div fxFlex="2"></div>
-        <button
-            [disabled]="collegeScorecardSearchForm.controls.zip.value===''||collegeScorecardSearchForm.controls.zip.value===null"
-            type="submit" class="btn btn-outline-primary">Search</button>
+        <div fxFlex="2"></div> -->
+        <button [disabled]="collegeScorecardSearchForm.invalid" type="submit"
+            class="btn btn-outline-primary">Search</button>
     </form>
 </div>
 
@@ -24,44 +23,105 @@
 
 <div class="cards-list-wrapper">
     <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="15" fxLayout="column" fxLayoutAlign="start start">
-            <mat-card style="width: 100%;">
-                <div fxLayout="column" fxLayoutAlign="start start" style="width: 100%;">
-                    <div class="mat-subheading-1"><u>Filters</u></div>
-                    <!-- city -->
-                    <input class="form-control form-control-sm" type="text" placeholder="City">
-                    <!-- state -->
-                    <select fxFlex="15" class="form-select form-select-sm" aria-label="State" style="margin-top: 12px;">
-                        <option value="State">State</option>
-                        <option *ngFor="let state of statesList" [value]="state.SHORT">
-                            {{ state.SHORT + " - " + state.STATE }}
-                        </option>
-                    </select>
-                    <!-- avl. programs -->
-                    <input class="form-control form-control-sm" type="text" placeholder="Major"
-                        style="margin-top: 12px;">
-                    <button type="button" class="btn btn-sm btn-outline-primary"
+        <div fxFlex="15" class="cards-list-col-filters shadow-sm">
+            <form [formGroup]="filterResultsForm" (ngSubmit)="filterResults()" fxLayout="column"
+                fxLayoutAlign="start start">
+                <!-- <mat-card style="width: 100%;"> -->
+                <!-- <div fxLayout="column" fxLayoutAlign="start start" style="width: 100%;" > -->
+                <div class="mat-subheading-1"><u>Filters</u></div>
+                <!-- city -->
+                <input formControlName="city" class="form-control form-control-sm" type="text" placeholder="City">
+                <!-- state -->
+                <select formControlName="state" class="form-select form-select-sm" aria-label="State"
+                    style="margin-top: 12px;">
+                    <option value="State">State</option>
+                    <option *ngFor="let state of statesList" [value]="state.SHORT">
+                        {{ state.SHORT + " - " + state.STATE }}
+                    </option>
+                </select>
+                <!-- avl. programs -->
+                <input formControlName="major" class="form-control form-control-sm" type="text" placeholder="Major"
+                    style="margin-top: 12px;">
+                <div fxLayout="row" fxLayoutAlign="start center" style="width: 90%;">
+                    <button type="submit" class="btn btn-sm btn-outline-primary"
                         style="margin-top: 12px;">Apply</button>
+                    <div fxFlex="2"></div>
+                    <button *ngIf="filterService.isFilterApplied" type="button" class="btn btn-sm btn-outline-secondary"
+                        style="margin-top: 12px;" (click)="resetResults()">Reset</button>
                 </div>
-            </mat-card>
+                <!-- </div> -->
+                <!-- </mat-card> -->
+            </form>
         </div>
         <div fxFlex="1"></div>
         <div fxFlex="84" fxLayout="column" fxLayoutAlign="start start" class="cards-list-col">
             <div *ngFor="let result of results; let i = index;" class="cards-list">
                 <mat-card>
-                    <div fxLayout="row" fxLayoutAlign="start center">
+                    <div fxLayout="row" fxLayoutAlign="start start">
                         <div fxFlex="2"></div>
-                        <div class="mat-subheading-2">{{ result.school.name }}</div>
+                        <div fxLayout="column" fxLayoutAlign="start start" style="width: 100%;">
+                            <div class="mat-subheading-2"><u>{{ result.school.name |uppercase}}</u></div>
+                            <div fxLayout="row" fxLayoutAlign="start start" style="width: 100%;">
+                                <div class="mat-small">
+                                    <b>City: </b> {{ result.school.city }}
+                                </div>
+                                <div fxFlex="1"></div>
+                                <div class="mat-small">
+                                    <b>State: </b> {{ result.school.state }}
+                                </div>
+                                <div fxFlex="1"></div>
+                                <div class="mat-small">
+                                    <b>Zip: </b> {{ result.school.zip }}
+                                </div>
+                            </div>
+                        </div>
                         <div fxFlex></div>
-                        <button type="button" mat-button *ngIf="currentlyExpandedResult!==result.school.name"
-                            (click)="expandResult(i)">Show more</button>
-                        <button type="button" mat-button *ngIf="currentlyExpandedResult===result.school.name"
-                            (click)="collapseResult(i)">Show less</button>
+                        <button mat-icon-button matTooltip="Add to favorites">
+                            <mat-icon>star</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="Remove from favorites">
+                            <mat-icon>star_outline</mat-icon>
+                        </button>
+                        <div fxFlex="2"></div>
+                        <button mat-icon-button *ngIf="currentlyExpandedResult!==result.school.name"
+                            (click)="expandResult(i)" matTooltip="Show more">
+                            <mat-icon>expand_more</mat-icon>
+                        </button>
+                        <button mat-icon-button *ngIf="currentlyExpandedResult===result.school.name"
+                            (click)="collapseResult(i)" matTooltip="Show less">
+                            <mat-icon>expand_less</mat-icon>
+                        </button>
                         <div fxFlex="2"></div>
                     </div>
                     <div *ngIf="currentlyExpandedResult===result.school.name" fxLayout="columns"
-                        fxLayoutAlign="start start">
-                        <span>Expanded!</span>
+                        fxLayoutAlign="start start" style="margin-top: 18px;">
+                        <div fxLayout="row" fxLayoutAlign="start start" style="width: 100%;">
+                            <div fxFlex="2"></div>
+                            <div fxFlex="40" fxLayout="column" fxLayoutAlign="start start"
+                                style="border-right: 1px solid gainsboro;">
+                                <div class="mat-subheading-2"><u>Links</u></div>
+                                <div class="mat-small" style="margin-top: 8px;">
+                                    <a [href]="'https://'+result.school.school_url" target="_blank">Website</a>
+                                </div>
+                                <div class="mat-small" style="margin-top: 18px;">
+                                    <a [href]="'https://www.niche.com/search/?q='+result.school.name"
+                                        target="_blank">Search on Niche</a>
+                                </div>
+                            </div>
+                            <div fxFlex="4"></div>
+                            <div fxFlex="40" fxLayout="column" fxLayoutAlign="start start">
+                                <div class="mat-subheading-2"><u>Majors - Degree</u></div>
+                                <div class="programs-container">
+                                    <mat-list *ngIf="result.programs" role="list" style="margin-top: 8px;">
+                                        <mat-list-item role="listitem" *ngFor="let program of result.programs"
+                                            style="border-bottom: 1px solid gainsboro;">
+                                            {{ program.title }} - {{ program.credential.title }}
+                                        </mat-list-item>
+                                    </mat-list>
+                                </div>
+                            </div>
+                            <div fxFlex="2"></div>
+                        </div>
                     </div>
                 </mat-card>
             </div>

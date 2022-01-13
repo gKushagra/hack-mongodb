@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { College, CSC_Program, CSC_School } from './models';
+import { CSC_School } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -27,13 +26,8 @@ export class ApiService {
     return this.httpClient.get(this.endpoint + 'majors').toPromise();
   }
 
-  getCollegeScorecardSearch({ zip, name }): any {
-    let url = this.endpoint + 'collegecard';
-    if (zip)
-      url += `/${zip}`;
-    if (name)
-      url += `/${name}`;
-
+  getCollegeScorecardSearch({ keyword }): any {
+    let url = this.endpoint + `collegecard/${keyword}`;
     return this.httpClient.get<CSC_School[]>(url).toPromise();
   }
 }
