@@ -1,0 +1,55 @@
+<div fxLayout="column" fxLayoutAlign="start start" style="width: 35vw !important;">
+
+    <div fxLayout="row" fxLayoutAlign="center center" style="width: 100%;">
+        <div class="mat-title">Quick Add New Application</div>
+        <div fxFlex></div>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div style="width: 100%;">
+        <form [formGroup]="newApplicationForm" (ngSubmit)="saveNewApplication()" fxLayout="column"
+            fxLayoutAlign="start start" style="width: 100%;">
+            <div *ngIf="saveApplicationError&&saveApplicationError!==''">{{ saveApplicationError }}</div>
+            <div fxLayout="row" fxLayoutAlign="start start" style="width: 100%; margin-top: 16px;">
+                <div fxFlex="2"></div>
+                <div fxLayout="column" fxLayoutAlign="start start">
+                    <div class="mat-title">{{ dialogData.school.school.name |uppercase }}</div>
+                    <div class="mat-small">
+                        {{ dialogData.school.school.city + ', ' +
+                        dialogData.school.school.state + ', ' +
+                        dialogData.school.school.zip + ' - ' }}
+                        <a [href]="'https://localhost'+dialogData.school.school.school_url" target="_blank">Website</a>
+                    </div>
+                </div>
+                <div fxFlex="2"></div>
+            </div>
+            <select formControlName="program" class="form-select" style="margin-top: 12px;">
+                <option value="Program">Program</option>
+                <option *ngFor="let program of dialogData.school.programs"
+                    [value]="program.title + ' - ' + program.credential.title">
+                    {{ program.title + ' - ' + program.credential.title }}
+                </option>
+            </select>
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Deadline</mat-label>
+                <input formControlName="deadline" matInput [matDatepicker]="picker">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <select formControlName="status" class="form-select" style="margin-top: 12px;">
+                <option value="Status">Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Not Applied">Not Applied</option>
+                <option value="Awaiting Result">Awaiting Result</option>
+            </select>
+            <input formControlName="application_fee" class="form-control" type="number" placeholder="Application Fee"
+                style="margin-top: 12px;">
+            <input formControlName="tuition" class="form-control" type="number" placeholder="Tuition"
+                style="margin-top: 12px;">
+            <button type="submit" class="btn btn-outline-primary" style="margin-top: 12px;">Save</button>
+        </form>
+    </div>
+
+</div>
