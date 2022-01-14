@@ -29,6 +29,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [],
@@ -43,6 +45,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatCheckboxModule,
     MatChipsModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
@@ -62,6 +65,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatListModule,
     MatMenuModule,
     MatIconModule,
+    MatPaginatorModule,
   ],
   exports: [
     MatAutocompleteModule,
@@ -73,6 +77,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatCheckboxModule,
     MatChipsModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
@@ -91,7 +96,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressSpinnerModule,
     MatListModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule { }

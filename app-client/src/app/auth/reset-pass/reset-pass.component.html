@@ -1,0 +1,32 @@
+<div style="width: 100%; padding: 12px 16px 12px 16px;">
+    <form [formGroup]="resetPasswordForm" (ngSubmit)="resetPassword()" fxLayout="column"
+        fxLayoutAlign="space-around center" style="width: 100%;">
+        <div *ngIf="resetPasswordError&&resetPasswordError!==''" style="width: 100%;">
+            <div class="mat-small" style="color: #B71C1C;">
+                {{ resetPasswordError }}
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" style="width: 100%; margin-top: 12px;">
+            <input formControlName="password" class="form-control" [type]="isPasswordVisible?'text':'password'"
+                placeholder="Password">
+            <div fxFlex=10>
+                <button *ngIf="isPasswordVisible" type="button" (click)="isPasswordVisible=!isPasswordVisible"
+                    mat-icon-button>
+                    <mat-icon>visibility</mat-icon>
+                </button>
+                <button *ngIf="!isPasswordVisible" type="button" (click)="isPasswordVisible=!isPasswordVisible"
+                    mat-icon-button>
+                    <mat-icon>visibility_off</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" style="width: 100%; margin-top: 12px;">
+            <input formControlName="confirmPassword" class="form-control" [type]="isPasswordVisible?'text':'password'"
+                placeholder="Password">
+            <div fxFlex=10></div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" style="width: 100%; margin-top: 12px;">
+            <button type="submit" class="btn btn-outline-primary" [disabled]="resetPasswordForm.invalid">Submit</button>
+        </div>
+    </form>
+</div>

@@ -1,3 +1,16 @@
+export interface Authorization {
+    isAuthenticated: boolean,
+    user: User
+}
+
+export interface AuthResponse {
+    token: string,
+    data: {
+        id: string,
+        email: string
+    }
+}
+
 export interface User {
     id: string,
     email: string,
@@ -6,13 +19,18 @@ export interface User {
 }
 
 export interface Favorite {
-    school: CSC_School
+    id: string,
+    school: any,
+    programs: any
 }
 
 export interface Application {
     id: string,
     program: string,
     deadline: Date,
+    status: string,
+    application_fee: number,
+    tuition: number,
     school: CSC_School,
     files: any,
     notes: Note[],

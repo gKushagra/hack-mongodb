@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
+import { AuthService } from '../auth.service';
 import { College, CSC_School, State } from "../models";
 
 @Component({
@@ -20,6 +21,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
+    private authService: AuthService,
   ) {
     this.collegeList = [];
     this.statesList = [];
@@ -30,8 +32,15 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.apiService.getColleges()
-    // .then(data => /*this.collegeList = data*/ console.log(data));
+    if (localStorage.getItem('token') && !this.authService.auth.isAuthenticated) {
+      this.authService.auth.user = {
+        id: localStorage.getItem('id'),
+        email: localStorage.getItem('email'),
+        applications: [],
+        favorites: []
+      };
+      this.authService.auth.isAuthenticated = true;
+    }
   }
 
   collegeScorecardSearch(): void {

@@ -14,8 +14,14 @@ import { SearchResultsComponent } from './search-results/search-results.componen
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FilterService } from './filter.service';
-import { AuthComponent } from './auth/auth/auth.component';
+import { AuthService } from "./auth.service";
 import { ResetComponent } from './auth/reset/reset.component';
+import { AuthDialogComponent } from './auth/auth-dialog/auth-dialog.component';
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { ResetPassComponent } from './auth/reset-pass/reset-pass.component';
+import { ApplicationsComponent } from './applications/applications.component';
+import { NewDialogComponent } from './applications/new-dialog/new-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,8 +29,13 @@ import { ResetComponent } from './auth/reset/reset.component';
     HomeComponent,
     SearchResultsComponent,
     ToolbarComponent,
-    AuthComponent,
-    ResetComponent
+    ResetComponent,
+    AuthDialogComponent,
+    LoginComponent,
+    SignupComponent,
+    ResetPassComponent,
+    ApplicationsComponent,
+    NewDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +50,7 @@ import { ResetComponent } from './auth/reset/reset.component';
   providers: [
     ApiService,
     FilterService,
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })
