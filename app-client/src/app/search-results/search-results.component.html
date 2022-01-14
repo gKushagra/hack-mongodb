@@ -16,6 +16,12 @@
 
 <div class="filter-options">
     <div fxLayout="row" fxLayoutAlign="start center" style="width: 100%">
+        <button *ngIf="!isViewingFavorites" class="btn btn-outline-dark btn-sm" (click)="loadFavorites()">
+            <u>View Favorites</u>
+        </button>
+        <button *ngIf="isViewingFavorites" class="btn btn-outline-dark btn-sm" (click)="hideFavorites()">
+            <u>Hide Favorites</u>
+        </button>
         <div fxFlex></div>
         <div><b><u>{{ "Showing " + resultsCount + " Colleges" }}</u></b></div>
     </div>
@@ -76,13 +82,15 @@
                             </div>
                         </div>
                         <div fxFlex></div>
-                        <button mat-icon-button matTooltip="Add to favorites">
-                            <mat-icon>star</mat-icon>
-                        </button>
-                        <button mat-icon-button matTooltip="Remove from favorites">
-                            <mat-icon>star_outline</mat-icon>
-                        </button>
-                        <div fxFlex="2"></div>
+                        <div *ngIf="authService.auth.isAuthenticated" fxLayout="row" fxLayoutAlign="start start">
+                            <button mat-icon-button (click)="quickAddApplication(i)" matTooltip="Quick Add Application">
+                                <mat-icon>add_box</mat-icon>
+                            </button>
+                            <div fxFlex="2"></div>
+                            <button mat-icon-button (click)="alterFavorite(i)" matTooltip="Favorite">
+                                <mat-icon>{{ checkFavorite(i) ? 'star' : 'star_outline' }}</mat-icon>
+                            </button>
+                        </div>
                         <button mat-icon-button *ngIf="currentlyExpandedResult!==result.school.name"
                             (click)="expandResult(i)" matTooltip="Show more">
                             <mat-icon>expand_more</mat-icon>
