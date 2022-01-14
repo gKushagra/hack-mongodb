@@ -6,11 +6,15 @@ const axios = require('axios');
 const jwt = require("jsonwebtoken");
 const formidable = require('formidable');
 const path = require('path');
-const mongoose = require("mongoose");
-const User = mongoose.model("User");
-const Reset = mongoose.model("Reset");
-var router = express.Router();
 var appLib = new Applications();
+var router = express.Router();
+try {
+    var mongoose = appLib.getMongooseConn();
+    var User = mongoose.model("User");
+    var Reset = mongoose.model("Reset");
+} catch (error) {
+    console.log("Mongoose Error");
+}
 
 /** Authentication */
 /** POST - Login */
@@ -130,20 +134,16 @@ router.get('/auth/reset/:email', async function (req, res, next) {
                 // return res.status(200).json("Email with reset link sent");
 
                 // Axios - send to sendgrid email api
-                axios.post({
-                    url: '/email',
-                    method: 'post',
-                    baseUrl: process.env.SG_EMAIL,
-                    headers: { 'Content-Type': 'application/json' },
-                    data: {
-                        to: user[0].email,
-                        subject: "[No Reply] Password Reset Link",
-                        text: `${domain}/reset?token=${token}`,
-                        html: `<p>Click on this <a href="${domain}/reset?token=${token}">link</a> to reset your password.`
-                    }
+                axios.post(`${process.env.SG_EMAIL}/email`, {
+                    to: user[0].email,
+                    subject: "[No Reply] Password Reset Link",
+                    text: `${process.env.RESET_DOMAIN}/home?token=${token}`,
+                    html: `<p> Click on this 
+                        <a href="${process.env.RESET_DOMAIN}/home?token=${token}">link</a> 
+                        to reset your password.</p><small>Softwright support</small>`
                 })
                     .then(r => {
-                        console.log(r);
+                        // console.log(r);
                         return res.status(200).json("Email with reset link sent");
                     })
                     .catch(e => {
@@ -293,5 +293,110 @@ router.get('/collegecard/:keyword', async function (req, res, next) {
         });
 });
 /** END COLLEGE DATA */
+
+/** APPLICATIONS */
+// applications - add, edit, delete
+router.get('/application/:id', async function (req, res, next) {
+    try {
+        var applications = await appLib.getApplications({
+            id: req.params.id
+        });
+        res.status(200).json(applications);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/application', async function (req, res, next) {
+    try {
+        await appLib.saveApplication({
+            id: req.body.id,
+            application: req.body.application
+        });
+        res.status(200).json("Saved");
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.put('/application', async function (req, res, next) {
+    try {
+        await appLib.editApplication({
+            id: req.body.id,
+            application: req.body.application
+        });
+        res.status(200).json("Updated");
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.delete('/application/:id/:applicationId', async function (req, res, next) {
+    try {
+        await appLib.deleteApplication({
+            id: req.params.id,
+            applicationId: req.params.applicationId
+        });
+        res.status(200).json("Deleted");
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get('/favorite/:id', async function (req, res, next) {
+    try {
+        var favorites = await appLib.getFavorites({
+            id: req.params.id
+        });
+        res.status(200).json(favorites);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/favorite', async function (req, res, next) {
+    try {
+        var states = await appLib.saveToFavorites({
+            id: req.body.id,
+            favorite: req.body.favorite
+        });
+        res.status(200).json(states);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.get('/shared/:id', async function (req, res, next) {
+    try {
+        var applications = await appLib.getSharedApplications({
+            id: req.params.id
+        });
+        res.status(200).json(applications);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/shared', async function (req, res, next) {
+    try {
+        await appLib.shareApplication({
+            id: req.body.id,
+            application: req.body.application,
+            shareTo: req.body.shareTo
+        });
+        res.status(200).json("Saved");
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+/** END APPLICATIONS */
 
 module.exports = router;
