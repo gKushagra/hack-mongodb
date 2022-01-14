@@ -2,15 +2,19 @@
     <div fxFlex></div>
     <!-- <span>Home</span> -->
     <!-- <span class="example-spacer"></span> -->
-    <a routerLink="/home" mat-button>
+    <a routerLink="/home" mat-button matTooltip="Go to Homepage">
         Home
     </a>
-    <a routerLink="applications" mat-button>
+    <a *ngIf="authService.auth.isAuthenticated" routerLink="/applications" mat-button
+        matTooltip="View your applications">
         My Applications
     </a>
     <div fxFlex=1></div>
-    <button mat-icon-button>
+    <button *ngIf="!authService.auth.isAuthenticated" mat-icon-button (click)="openAuthDialog()" matTooltip="Account">
         <mat-icon>account_circle</mat-icon>
+    </button>
+    <button *ngIf="authService.auth.isAuthenticated" mat-icon-button (click)="logout()" matTooltip="Logout">
+        <mat-icon>logout</mat-icon>
     </button>
     <div fxFlex=1></div>
 </mat-toolbar>
